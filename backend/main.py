@@ -1,13 +1,17 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain.chains import LLMChain
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-llm = OpenAI(api_key='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')
+llm = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 prompt_template = PromptTemplate(
     input_variables=["data_description", "question"],
@@ -18,9 +22,6 @@ prompt_template = PromptTemplate(
     When you receive a question, use this info to respond based on the data given: {question}
 
     If the question is a greeting or asks about who you are, introduce yourself in a friendly and engaging way. Make sure to connect with the teen audience.
-    If the question is about hospital hours, doctors, or general medical advice, provide the information clearly and concisely.
-    If you don’t have enough information to answer the question, acknowledge this politely and offer to help with something else.
-    Make sure your responses are relatable and use language and slang that resonates with a teenage audience.
     """
 )
 
