@@ -41,7 +41,7 @@ const Message: React.FC<MessageProps> = ({
           <Avatar className="bg-gradient-to-r from-pink-500 to-purple-600 h-8 w-8">AI</Avatar>
           <div className="bg-white dark:bg-[#241242] text-sm text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg shadow">
             <TypewriterEffect text={message.text} />
-            <DataVisualization csvData={csvData} />
+            {/* <DataVisualization csvData={csvData} /> */}
             <div className="flex mt-1 space-x-1">
               <Button
                 variant="ghost"

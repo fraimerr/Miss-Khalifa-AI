@@ -38,7 +38,7 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({ csvData }) => {
   }, [csvData]);
 
   return (
-    <Table>
+    <Table className="py-4">
       <TableCaption>A list of your recent invoices.</TableCaption>
       <TableHeader>
         <TableRow>

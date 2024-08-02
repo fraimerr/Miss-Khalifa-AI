@@ -1,32 +1,40 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import random
-import re
+from langchain.chains import LLMChain
+from langchain.llms import OpenAI
+from langchain.prompts import PromptTemplate
 
 app = Flask(__name__)
 CORS(app)
 
-botresponses = {
-    r'\bhi\b': ['Hi! I am Miss Kahlifa. The professional chatbot for JNF. How can I help you today?', 'Hey! I\'m Gideon, your virtual JNF assistant. What can I do for you today?'],
-    r'\bheadache\b': ["You could be experiencing a Migraine. I recommend drinking water and resting in a dark, quiet room."],
-    r'\btired\b': ["You might be experiencing fatigue. Try drinking some milk, eating a nutritious meal, and taking a short nap."],
-    r'\bsick\b': ["I'm here to help. Can you tell me the three main symptoms you're experiencing?"],
-    r'\bheart\b': ["A rapid heart rate can be serious. If you think you are having a heart attack, head to the Emergency Room immediately!"],
-    r'\bhours\b': ["JNF opens at 4AM and closes at 10PM, however, the emergency room is opened 24/7"],
-    r'\bopen\b': ["JNF opens at 4AM and closes at 10PM, however, the emergency room is opened 24/7"],
-    r'\bclose\b': ["JNF opens at 4AM and closes at 10PM, however, the emergency room is opened 24/7"],
-    r'\bfever\b': ["Oh dear, you can treat your fever with water and a full night of rest."],
-    r'\bpressure\b': ["You may have high blood pressure. I suggest you go to your doctor who will examine you and give you a prescribed pill if needed."],
-    r'\bdoctors\b': ["There are many doctors that are available: Dr. Melissa Harvad, Dr. Cam Wilkilson, Dr. John Doe"],
-    r'\bharvard\b': ["Dr. Melissa Harvard's Office is located on the Corner of Central and Victoria Road. Office numbers are 1(869)664-8976. Opening hours are 08:30 - 16:30."],
-    r'\bwilkilson\b': ["Dr. Cam Wilkilson's Office is located on the Corner of Central St and Cayon St. Office numbers are 1(869)664-8976. Opening hours are 08:00 - 16:00."],
-    r'\bdoe\b': ["Dr. John Doe's Office is located on Wellington Road. Office numbers are 1(869)664-8976. Opening hours are 07:30 - 16:00."],
-    r'\btreatment\b': ["You can get treatment from many places. Firstly, you can go to the JNF hospital during opening hours or you can speak to the many doctors available within Basseterre."],
-    r'\bhello\b': ["Hi! I am Gideon. The professional chatbot for JNF. How can I help you today?', 'Hey! I'm Gideon, your virtual JNF assistant. What can I do for you today?"],
-    r'\bfeet\b': ["I'm sorry to hear that you're experiencing foot pain. Foot pain can arise from a variety of causes, including: Injuries, Overuse or repetitive stress, or Medical conditions. To help alleviate the pain, you might consider getting treatment."],
-    r'\bthank\b': ["No problem. Return anytime!"],
-    r'\bthanks\b': ["No problem. Return anytime!"],
-}
+llm = OpenAI(api_key='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')
+
+prompt_template = PromptTemplate(
+    input_variables=["data_description", "question"],
+    template="""
+    You are Miss Khalifa, a virtual sexual health assistant. Here is the data you have:
+    {data_description}
+
+    When you receive a question, use this info to respond based on the data given: {question}
+
+    If the question is a greeting or asks about who you are, introduce yourself in a friendly and engaging way. Make sure to connect with the teen audience.
+    If the question is about hospital hours, doctors, or general medical advice, provide the information clearly and concisely.
+    If you don’t have enough information to answer the question, acknowledge this politely and offer to help with something else.
+    Make sure your responses are relatable and use language and slang that resonates with a teenage audience.
+    """
+)
+
+chain = LLMChain(llm=llm, prompt=prompt_template)
+
+data_description = """
+JNF (Joseph N. France General Hospital) information:
+- Hospital hours: Opens at 4AM and closes at 10PM, emergency room is open 24/7
+- Doctors available: Dr. Melissa Harvard, Dr. Cam Wilkilson, Dr. John Doe
+- Dr. Melissa Harvard's Office: Corner of Central and Victoria Road, 1(869)664-8976, 08:30 - 16:30
+- Dr. Cam Wilkilson's Office: Corner of Central St and Cayon St, 1(869)664-8976, 08:00 - 16:00
+- Dr. John Doe's Office: Wellington Road, 1(869)664-8976, 07:30 - 16:00
+- General medical advice on common symptoms like headaches, fatigue, fever, etc.
+"""
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -34,17 +42,9 @@ def chat():
     if not user_text:
         return jsonify({"error": "No message provided"}), 400
 
-    response_found = False
-    for pattern, responses in botresponses.items():
-        if re.search(pattern, user_text, re.IGNORECASE):
-            response = random.choice(responses)
-            response_found = True
-            break
+    response = chain.run(data_description=data_description, question=user_text)
 
-    if not response_found:
-        response = "Sorry, I didn't quite get that."
-
-    return jsonify({"response": response})
+    return jsonify({"response": response.strip()})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
