@@ -12,9 +12,14 @@ import {
 	User,
 	MessageCircle,
 	Lock,
+	Github,
+	Linkedin,
+	Twitter,
+	PersonStanding,
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const HomePage = () => {
 	const [darkMode, setDarkMode] = useState(false);
@@ -23,6 +28,13 @@ const HomePage = () => {
 
 	useEffect(() => {
 		setMounted(true);
+		const prefersDarkMode = window.matchMedia(
+			"(prefers-color-scheme: dark)"
+		).matches;
+		setDarkMode(prefersDarkMode);
+	}, []);
+
+	useEffect(() => {
 		if (darkMode) {
 			document.documentElement.classList.add("dark");
 		} else {
@@ -54,10 +66,10 @@ const HomePage = () => {
 				} text-neutral-100 flex flex-col justify-between font-sans transition-all duration-500`}
 			>
 				<header
-					className={`p-6 ${
+					className={`fixed w-full z-50 p-4 ${
 						darkMode
-							? "bg-gradient-to-r from-[#190933] to-[#2d1854]"
-							: "bg-gradient-to-r from-white to-purple-50"
+							? "bg-gradient-to-r from-[#190933] to-[#2d1854] bg-opacity-80 backdrop-blur-md"
+							: "bg-gradient-to-r from-white to-purple-50 bg-opacity-80 backdrop-blur-md"
 					} shadow-lg`}
 				>
 					<div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -71,30 +83,20 @@ const HomePage = () => {
 						</motion.h1>
 						<nav className="hidden md:flex items-center space-x-6">
 							<ul className="flex space-x-6 text-base">
-								<motion.li whileHover={{ scale: 1.1 }}>
-									<Link
-										href="#features"
-										className={`${
-											darkMode
-												? "text-gray-200 hover:text-pink-400"
-												: "text-gray-800 hover:text-purple-600"
-										} font-medium`}
-									>
-										Features
-									</Link>
-								</motion.li>
-								<motion.li whileHover={{ scale: 1.1 }}>
-									<Link
-										href="#contact"
-										className={`${
-											darkMode
-												? "text-gray-200 hover:text-pink-400"
-												: "text-gray-800 hover:text-purple-600"
-										} font-medium`}
-									>
-										Contact
-									</Link>
-								</motion.li>
+								{["Features", "Team", "Contact"].map((item) => (
+									<motion.li key={item} whileHover={{ scale: 1.1 }}>
+										<Link
+											href={`#${item.toLowerCase()}`}
+											className={`${
+												darkMode
+													? "text-gray-200 hover:text-pink-400"
+													: "text-gray-800 hover:text-purple-600"
+											} font-medium`}
+										>
+											{item}
+										</Link>
+									</motion.li>
+								))}
 							</ul>
 							<motion.button
 								whileTap={{ scale: 0.95 }}
@@ -127,37 +129,31 @@ const HomePage = () => {
 							initial={{ opacity: 0, height: 0 }}
 							animate={{ opacity: 1, height: "auto" }}
 							exit={{ opacity: 0, height: 0 }}
-							className={`md:hidden ${
+							className={`md:hidden fixed top-16 left-0 right-0 z-40 ${
 								darkMode ? "bg-[#190933]" : "bg-white"
 							} shadow-lg`}
 						>
 							<nav className="flex flex-col items-center py-6 space-y-4">
-								<Link
-									href="#features"
-									className={`${
-										darkMode
-											? "text-gray-200 hover:text-pink-400"
-											: "text-gray-800 hover:text-purple-600"
-									} text-lg font-medium`}
-								>
-									Features
-								</Link>
-								<Link
-									href="#contact"
-									className={`${
-										darkMode
-											? "text-gray-200 hover:text-pink-400"
-											: "text-gray-800 hover:text-purple-600"
-									} text-lg font-medium`}
-								>
-									Contact
-								</Link>
+								{["Features", "Team", "Contact"].map((item) => (
+									<Link
+										key={item}
+										href={`#${item.toLowerCase()}`}
+										className={`${
+											darkMode
+												? "text-gray-200 hover:text-pink-400"
+												: "text-gray-800 hover:text-purple-600"
+										} text-lg font-medium`}
+										onClick={() => setMobileMenuOpen(false)}
+									>
+										{item}
+									</Link>
+								))}
 							</nav>
 						</motion.div>
 					)}
 				</AnimatePresence>
 
-				<main className="flex-grow flex items-center p-6 md:p-12">
+				<main className="flex-grow flex items-center p-6 md:p-12 mt-16">
 					<div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
 						<motion.div
 							initial={{ opacity: 0, x: -50 }}
@@ -166,17 +162,17 @@ const HomePage = () => {
 							className="text-left"
 						>
 							<h2 className="text-5xl md:text-6xl font-bold mb-6">
-								<span className="text-pink-400">UI/UX</span>{" "}
-								<span className="text-purple-300">DESIGN</span>
+								<span className="text-purple-300">Your personal</span>{" "}
+								<span className="text-pink-400">
+									Sex Health Assistant Chatbot
+								</span>
 							</h2>
 							<p
 								className={`text-xl mb-8 ${
 									darkMode ? "text-gray-300" : "text-gray-700"
 								}`}
 							>
-								Your friendly Sex Health AI chatbot created and operated by Pink
-								Panthers. Get answers to all your questions in a fun and
-								engaging way!
+								Meet your go-to buddy for all things sexual health.
 							</p>
 							<motion.div
 								whileHover={{ scale: 1.05 }}
@@ -282,6 +278,97 @@ const HomePage = () => {
 					</motion.div>
 				</section>
 
+				<section
+					id="team"
+					className={`${darkMode ? "bg-[#0f0721]" : "bg-white"} py-16`}
+				>
+					<motion.div
+						initial={{ opacity: 0, y: 50 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.5 }}
+						className="max-w-7xl mx-auto text-left px-6"
+					>
+						<h3 className="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+							Meet Our Team
+						</h3>
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+							{[
+								{
+									name: "Fraimer De La Cruz",
+									role: "Team Leader, Code Whisperer, UI Designer, Presenter",
+									image: ""
+								},
+								{
+									name: "Osei France",
+									role: "Code Whisperer",
+									image: ""
+								},
+								{
+									name: "Israel Seaton",
+									role: "Code Whisperer",
+									image: ""
+								},
+								{
+									name: "Mahish Dora",
+									role: "Researcher, UI Designer, Presenter, Bot Persona Developer",
+									image: ""
+								},
+								{
+									name: "Keshawn Jones",
+									role: "Researcher, Data Manager",
+									image: ""
+								},
+								{
+									name: "Ziara Rogers",
+									role: "UI Designer, Bot Persona Developer",
+									image: ""
+								},
+								{
+									name: "Christopher Francis",
+									role: "Data Manager",
+									image: ""
+								}
+							].map((member, index) => (
+								<motion.div
+									key={index}
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.3, delay: index * 0.1 }}
+									className={`flex flex-col items-center p-6 rounded-xl ${
+										darkMode ? "bg-[#190933]" : "bg-purple-50"
+									}`}
+								>
+									{member.image ? (
+										<Image
+											src={member?.image}
+											alt={member.name}
+											className="w-32 h-32 rounded-full mb-4"
+											width={32}
+											height={32}
+										/>
+									) : (
+										<PersonStanding className="w-32 h-32 rounded-full mb-4" />
+									)}
+									<h4
+										className={`text-xl font-bold ${
+											darkMode ? "text-white" : "text-gray-800"
+										}`}
+									>
+										{member.name}
+									</h4>
+									<p
+										className={`text-sm ${
+											darkMode ? "text-gray-300" : "text-gray-600"
+										}`}
+									>
+										{member.role}
+									</p>
+								</motion.div>
+							))}
+						</div>
+					</motion.div>
+				</section>
+
 				<footer
 					id="contact"
 					className={`${
@@ -302,7 +389,28 @@ const HomePage = () => {
 							</a>
 						</p>
 						<div className="flex justify-center space-x-6">
-							{/* Add social media icons here */}
+							{[
+								{ icon: <Github />, link: "https://github.com/misskhalifaai" },
+								{
+									icon: <Linkedin />,
+									link: "https://linkedin.com/company/misskhalifaai",
+								},
+								{
+									icon: <Twitter />,
+									link: "https://twitter.com/misskhalifaai",
+								},
+							].map((social, index) => (
+								<motion.a
+									key={index}
+									href={social.link}
+									target="_blank"
+									rel="noopener noreferrer"
+									whileHover={{ scale: 1.2 }}
+									className="text-gray-400 hover:text-white transition-colors duration-300"
+								>
+									{social.icon}
+								</motion.a>
+							))}
 						</div>
 					</div>
 				</footer>

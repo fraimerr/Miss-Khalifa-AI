@@ -1,4 +1,3 @@
-// pages/index.tsx
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -6,6 +5,7 @@ import axios from "axios";
 import Header from "@/components/Header";
 import ChatInput from "@/components/ChatInput";
 import ChatMessages from "../components/ChatMessages";
+import DataVisualization from "@/components/DataVisualization";
 
 interface Message {
   text: string;
@@ -83,7 +83,7 @@ const ChatInterface: React.FC = () => {
   }, [messages]);
 
   return (
-    <div className={`min-h-screen ${darkMode ? "dark" : ""} font-sans`}>
+    <div className={`h-screen overflow-hidden ${darkMode ? "dark" : ""} font-sans`}>
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
       <main className="flex-1 flex flex-col h-[calc(100vh-64px)] bg-gray-50 dark:bg-[#0f0721]">
         <ChatMessages
@@ -94,6 +94,7 @@ const ChatInterface: React.FC = () => {
           bottomRef={bottomRef}
         />
         <ChatInput input={input} setInput={setInput} handleSend={handleSend} />
+        <p className="text-center text-sm text-gray-300 py-2">This sexual health chatbot is designed to provide general information and education only.</p>
       </main>
     </div>
   );

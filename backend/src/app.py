@@ -1,5 +1,5 @@
 import os
-import csv
+from utils.load_csv import load_csv
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain_openai import ChatOpenAI
@@ -67,21 +67,7 @@ with_message_history = RunnableWithMessageHistory(
 config = {"configurable": {"session_id": "test123"}}
 
 
-def load_csv(file_path):
-    qa_data = {}
-    with open(file_path, "r") as csvfile:
-        csv_reader = csv.DictReader(csvfile)
-        for row in csv_reader:
-            qa_data[row["Questions"].lower()] = {
-                "Answer": row["Answers"],
-                "Link": row["Links"],
-            }
-    return qa_data
-
-
-qa_data = load_csv(
-    "C:\\Users\\fraimer\\Desktop\\MissKhalifaAI\\backend\\data\\questions_sti.csv"
-)
+qa_data = load_csv(r"E:\MissKhalifaAI\backend\data")
 
 
 @app.route("/chat", methods=["POST"])
