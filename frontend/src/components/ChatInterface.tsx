@@ -16,7 +16,7 @@ interface Message {
 const ChatInterface: React.FC = () => {
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [input, setInput] = useState("");
-	const [isTyping, setIsTyping] = useState(false);
+	const [isThinking, setIsThinking] = useState(false);
 	const [darkMode, setDarkMode] = useState(true);
 	const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -38,7 +38,7 @@ const ChatInterface: React.FC = () => {
 		if (input.trim()) {
 			setMessages((prev) => [...prev, { text: input, isBot: false }]);
 			setInput("");
-			setIsTyping(true);
+			setIsThinking(true);
 
 			try {
 				const response = await axios.post("http://localhost:5000/chat", {
@@ -70,7 +70,7 @@ const ChatInterface: React.FC = () => {
 					},
 				]);
 			} finally {
-				setIsTyping(false);
+				setIsThinking(false);
 			}
 		}
 	};
@@ -94,6 +94,7 @@ const ChatInterface: React.FC = () => {
 					handleCopyText={handleCopyText}
 					bottomRef={bottomRef}
 				/>
+				{isThinking ? <p className="text-lg">Thinking.....</p> : ""}
 				<div className="pb-6 pt-4 bg-gray-100 dark:bg-[#1a0e33]">
 					<ChatInput
 						input={input}
@@ -107,8 +108,7 @@ const ChatInterface: React.FC = () => {
 						transition={{ delay: 0.2 }}
 					>
 						Disclaimer: This sexual health chatbot provides general information
-						for educational purposes only. It is not a substitute for
-						professional medical advice, diagnosis, or treatment.
+						for educational purposes only.
 					</motion.p>
 				</div>
 			</main>

@@ -4,6 +4,8 @@ import { Button } from "../components/ui/button";
 import { Volume2, Clipboard, Check, Bot, User } from "lucide-react";
 import TypewriterEffect from "./TypewritterEffect";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import Logo from "../../public/miss_khalifa_ai.png";
 
 interface MessageProps {
 	message: { text: string; isBot: boolean };
@@ -35,9 +37,14 @@ const Message: React.FC<MessageProps> = ({
 		>
 			{message.isBot ? (
 				<div className="flex items-start space-x-3 max-w-2xl">
-					<Avatar className="bg-gradient-to-r from-pink-500 to-purple-600 h-10 w-10 shadow-md">
-						<AvatarFallback className="flex items-center justify-center text-white">
-							<Bot className="h-5 w-5" />
+					<Avatar className="bg-none h-10 w-10 shadow-md">
+						<AvatarFallback className="bg-none flex items-center justify-center text-white">
+							<Image
+								src={Logo}
+								width={48}
+								height={48}
+								alt="Miss Khalifa AI"
+							/>
 						</AvatarFallback>
 					</Avatar>
 					<div className="bg-white dark:bg-[#241242] text-gray-800 dark:text-gray-200 px-4 py-3 rounded-xl shadow-md">

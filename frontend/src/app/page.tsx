@@ -20,6 +20,7 @@ import {
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Logo from "../../public/miss_khalifa_ai.png";
 
 const HomePage = () => {
 	const [darkMode, setDarkMode] = useState(false);
@@ -73,14 +74,23 @@ const HomePage = () => {
 					} shadow-lg`}
 				>
 					<div className="max-w-7xl mx-auto flex justify-between items-center">
-						<motion.h1
-							initial={{ opacity: 0, y: -20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.5 }}
-							className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
-						>
-							Miss Khalifa AI
-						</motion.h1>
+						<div className="flex items-center space-x-2">
+							<Image
+								src={Logo} // Replace with the path to your logo image
+								alt="Miss Khalifa AI Logo"
+								width={40}
+								height={40}
+								className="rounded-full"
+							/>
+							<motion.h1
+								initial={{ opacity: 0, y: -20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.5 }}
+								className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
+							>
+								Miss Khalifa AI
+							</motion.h1>
+						</div>
 						<nav className="hidden md:flex items-center space-x-6">
 							<ul className="flex space-x-6 text-base">
 								{["Features", "Team", "Contact"].map((item) => (
@@ -192,9 +202,9 @@ const HomePage = () => {
 							transition={{ duration: 0.5 }}
 							className="relative"
 						>
-							<div className="bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl h-80 md:h-full w-full opacity-20"></div>
+							{/* <div className="bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl h-80 md:h-full w-full opacity-20"></div> */}
 							<div className="absolute inset-0 flex items-center justify-center">
-								<svg
+								{/* <svg
 									className="w-3/4 h-3/4"
 									viewBox="0 0 200 200"
 									xmlns="http://www.w3.org/2000/svg"
@@ -204,10 +214,16 @@ const HomePage = () => {
 										d="M45.7,-78.3C58.9,-71.1,69.2,-58.3,76.4,-44.1C83.6,-29.9,87.8,-14.9,87.8,0C87.8,14.9,83.7,29.8,76.4,43.8C69.2,57.8,58.9,71,45.6,78.5C32.3,86,16.2,87.9,0.1,87.7C-15.9,87.5,-31.8,85.3,-45.7,77.8C-59.6,70.3,-71.5,57.5,-78.6,43C-85.7,28.5,-88,14.3,-87.4,0.3C-86.9,-13.6,-83.5,-27.2,-76.4,-39.7C-69.2,-52.2,-58.3,-63.6,-45.3,-70.9C-32.2,-78.3,-16.1,-81.6,0.3,-82.1C16.7,-82.6,33.5,-80.3,45.7,-78.3Z"
 										transform="translate(100 100)"
 									/>
-								</svg>
-								<div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-bold">
+								</svg> */}
+								<Image
+									src={Logo}
+									width={400}
+									height={400}
+									alt="Miss Khalifa AI"
+								/>
+								{/* <div className="absolute inset-0 flex items-center justify-center text-white text-4xl font-bold">
 									AI
-								</div>
+								</div> */}
 							</div>
 						</motion.div>
 					</div>
@@ -296,38 +312,38 @@ const HomePage = () => {
 								{
 									name: "Fraimer De La Cruz",
 									role: "Team Leader, Code Whisperer, UI Designer, Presenter",
-									image: ""
+									image: "",
 								},
 								{
 									name: "Osei France",
 									role: "Code Whisperer",
-									image: ""
+									image: "",
 								},
 								{
 									name: "Israel Seaton",
 									role: "Code Whisperer",
-									image: ""
+									image: "",
 								},
 								{
 									name: "Mahish Dora",
 									role: "Researcher, UI Designer, Presenter, Bot Persona Developer",
-									image: ""
+									image: "",
 								},
 								{
 									name: "Keshawn Jones",
 									role: "Researcher, Data Manager",
-									image: ""
+									image: "",
 								},
 								{
 									name: "Ziara Rogers",
 									role: "UI Designer, Bot Persona Developer",
-									image: ""
+									image: "",
 								},
 								{
 									name: "Christopher Francis",
 									role: "Data Manager",
-									image: ""
-								}
+									image: "",
+								},
 							].map((member, index) => (
 								<motion.div
 									key={index}

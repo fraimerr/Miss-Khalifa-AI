@@ -2,6 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Sun, Moon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import Logo from "../../public/miss_khalifa_ai.png";
 
 interface HeaderProps {
   darkMode: boolean;
@@ -13,8 +15,14 @@ const Header: React.FC<HeaderProps> = ({ darkMode, setDarkMode }) => {
     <header className={`p-4 ${darkMode ? "bg-[#190933]" : "bg-white"} shadow-md`}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center space-x-2">
-          <ArrowLeft className="h-5 w-5" />
-          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">
+          <Image
+            src={Logo} // Replace with the path to your logo image
+            alt="Miss Khalifa AI Logo"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+          <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">
             Miss Khalifa AI
           </h1>
         </Link>

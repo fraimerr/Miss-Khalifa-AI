@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import Message from "./Message";
-import { HelpCircle, Zap, Code, Book } from "lucide-react";
+import { HelpCircle, Zap, Code, Book, Heart, Calendar, Info, Pill, Shield, Stethoscope, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ChatMessagesProps {
@@ -21,25 +21,25 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
 }) => {
 	const tips = [
 		{
-			text: "Ask about current events",
-			icon: Zap,
-			gradient: "from-yellow-400 to-orange-500",
+			text: "What are common STI symptoms?",
+			icon: Stethoscope,
+			gradient: "from-red-400 to-pink-500",
 		},
 		{
-			text: "Get help with coding",
-			icon: Code,
+			text: "How often should I get tested?",
+			icon: Calendar,
 			gradient: "from-green-400 to-blue-500",
 		},
 		{
-			text: "Explore complex topics",
-			icon: Book,
-			gradient: "from-purple-400 to-pink-500",
+			text: "How can I practice safe sex?",
+			icon: Shield,
+			gradient: "from-yellow-400 to-orange-500",
 		},
 		{
-			text: "Discover science facts",
-			icon: HelpCircle,
-			gradient: "from-blue-400 to-indigo-500",
-		},
+			text: "How do I discuss STIs with a partner?",
+			icon: Users,
+			gradient: "from-blue-400 to-teal-500",
+		}
 	];
 
 	const [currentTipIndex, setCurrentTipIndex] = useState(0);
