@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Header from "@/components/Header";
@@ -94,7 +92,11 @@ const ChatInterface: React.FC = () => {
 					handleCopyText={handleCopyText}
 					bottomRef={bottomRef}
 				/>
-				{isThinking ? <p className="text-lg">Thinking.....</p> : ""}
+				{isThinking && (
+					<div className="thinking-container">
+						<p className="thinking-text">Thinking</p>
+					</div>
+				)}
 				<div className="pb-6 pt-4 bg-gray-100 dark:bg-[#1a0e33]">
 					<ChatInput
 						input={input}
@@ -112,6 +114,54 @@ const ChatInterface: React.FC = () => {
 					</motion.p>
 				</div>
 			</main>
+			<style jsx>{`
+				@keyframes radialAnimation {
+					0% {
+						background-size: 100% 100%;
+					}
+					50% {
+						background-size: 200% 200%;
+					}
+					100% {
+						background-size: 100% 100%;
+					}
+				}
+
+				.thinking-container {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					padding: 1rem;
+				}
+
+				.thinking-text {
+					font-size: 1.5rem;
+					font-weight: bold;
+					background: radial-gradient(circle, #ff00ff, #8a2be2, #ff00ff);
+					background-size: 200% 200%;
+					animation: radialAnimation 3s ease infinite;
+					-webkit-background-clip: text;
+					-webkit-text-fill-color: transparent;
+					background-clip: text;
+				}
+
+				.thinking-text::after {
+					content: "";
+					animation: ellipsis 1.5s infinite;
+				}
+
+				@keyframes ellipsis {
+					0% {
+						content: ".";
+					}
+					33% {
+						content: "..";
+					}
+					66% {
+						content: "...";
+					}
+				}
+			`}</style>
 		</div>
 	);
 };

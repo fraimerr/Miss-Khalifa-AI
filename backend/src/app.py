@@ -11,6 +11,8 @@ from langchain_core.chat_history import (
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -68,6 +70,14 @@ config = {"configurable": {"session_id": "test123"}}
 
 
 qa_data = load_csv("C:\\Users\\fraimer\\Desktop\\MissKhalifaAI\\backend\\data")
+
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000, chunk_overlap=0, length_function=len
+)
+
+# splits = text_splitter.create_documents(qa_data)
+
+# print(splits)
 
 
 @app.route("/chat", methods=["POST"])
