@@ -38,7 +38,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
 		{
 			text: "How do I discuss STIs with a partner?",
 			icon: Users,
-			gradient: "from-blue-400 to-teal-500",
+			gradient: "from-pink-300 to-purple-400",
 		}
 	];
 

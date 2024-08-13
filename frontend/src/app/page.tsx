@@ -16,11 +16,18 @@ import {
 	Linkedin,
 	Twitter,
 	PersonStanding,
+	CheckCircle,
+	RefreshCw,
+	Search,
+	Building,
+	Users,
+	Target
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import Logo from "../../public/miss_khalifa_ai.png";
+import Logo from "../../public/Offical_3High_Res_Logo.png";
+
 
 const HomePage = () => {
 	const [darkMode, setDarkMode] = useState(false);
@@ -230,160 +237,365 @@ const HomePage = () => {
 				</main>
 
 				<section
-					id="features"
-					className={`${darkMode ? "bg-[#241242]" : "bg-purple-50"} py-16`}
+				id="company"
+				className={`py-20 bg-gradient-to-b ${
+					darkMode 
+					? "from-[#0f0721] to-[#73214c]" 
+					: "from-gray-50 to-pink-200"
+				}`}
 				>
-					<motion.div
-						initial={{ opacity: 0, y: 50 }}
+				<motion.div
+					initial={{ opacity: 0, y: 50 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6 }}
+					className="max-w-6xl mx-auto text-center px-4"
+				>
+					<h2 className="text-5xl font-extrabold mb-12 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+					Discover Our Reason "Why?"
+					</h2>
+					<h2 className="text-3xl font-bold italic mb-12 text-transparent bg-clip-text bg-gradient-to-b from-pink-300 to-purple-300">
+					For Teens, By Teens
+					</h2>
+					<p className={`text-xl mb-10 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+					We are a team of teens who often felt embarrassed discussing sex with adults, relying on Google as our only source of information. Recognizing the gaps and discomfort in our own experiences, we decided to create a better solution—a chatbot dedicated to sex education. Our goal is to provide the teens of tomorrow with a safe, reliable, and discreet way to access essential knowledge. By building this chatbot, we aim to break down barriers of awkwardness and misinformation, empowering our peers to make informed decisions about their sexual health and relationships. 
+					</p>
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+					{[
+						{
+						icon: <Building size={56} />,
+						title: "Our Mission",
+						description: "To provide teens with a safe, accessible, and non-judgmental platform for learning about sexual health and relationships."
+						},
+						{
+						icon: <Users size={56} />,
+						title: "Our Team",
+						description: "Idiots with a goal."
+						},
+						{
+						icon: <Target size={56} />,
+						title: "Our Vision",
+						description: "A world where every teenager has the confidence and knowledge to make informed decisions about their sexual health, free from stigma or shame."
+						}
+					].map((feature, index) => (
+						<motion.div
+						key={index}
+						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5 }}
-						className="max-w-7xl mx-auto text-left px-6"
-					>
-						<h3 className="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
-							Awesome Features
+						transition={{ duration: 0.4, delay: index * 0.15 }}
+						className={`flex flex-col items-center p-8 rounded-2xl ${
+							darkMode 
+							? "bg-[#502c4f] bg-opacity-50" 
+							: "bg-white bg-opacity-60"
+						} backdrop-blur-sm shadow-lg`}
+						>
+						<motion.div
+							whileHover={{ scale: 1.1, rotate: 5 }}
+							className={`mb-6 ${darkMode ? "text-pink-600" : "text-blue-500"}`}
+						>
+							{feature.icon}
+						</motion.div>
+						<h3
+							className={`text-2xl font-bold mb-4 ${
+							darkMode ? "text-white" : "text-gray-800"
+							}`}
+						>
+							{feature.title}
 						</h3>
-						<ul className="grid grid-cols-1 md:grid-cols-3 gap-8">
-							{[
-								{
-									text: "Get answers to sensitive questions",
-									icon: <MessageCircle className="h-8 w-8" />,
-								},
-								{
-									text: "Learn about safe practices",
-									icon: <Shield className="h-8 w-8" />,
-								},
-								{
-									text: "Explore relationships and emotions",
-									icon: <Heart className="h-8 w-8" />,
-								},
-								{
-									text: "Understand your body better",
-									icon: <User className="h-8 w-8" />,
-								},
-								{
-									text: "Access reliable health information",
-									icon: <Book className="h-8 w-8" />,
-								},
-								{
-									text: "Chat anonymously and safely",
-									icon: <Lock className="h-8 w-8" />,
-								},
-							].map((feature, index) => (
-								<motion.li
-									key={index}
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ duration: 0.3, delay: index * 0.1 }}
-									whileHover={{
-										scale: 1.05,
-										boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-									}}
-									className={`flex flex-col items-center p-6 rounded-xl ${
-										darkMode
-											? "bg-[#2d1854] text-gray-200"
-											: "bg-white text-gray-800"
-									}`}
-								>
-									<div className="text-pink-500 mb-4">{feature.icon}</div>
-									<span className="text-center font-medium">
-										{feature.text}
-									</span>
-								</motion.li>
-							))}
-						</ul>
-					</motion.div>
+						<p
+							className={`text-base text-center ${
+							darkMode ? "text-gray-300" : "text-gray-600"
+							}`}
+						>
+							{feature.description}
+						</p>
+						</motion.div>
+					))}
+					</div>
+				</motion.div>
 				</section>
 
 				<section
-					id="team"
-					className={`${darkMode ? "bg-[#0f0721]" : "bg-white"} py-16`}
+				className={`h-32 bg-gradient-to-b ${
+					darkMode 
+					? "from-[#73214c] to-[#241242]" 
+					: "from-pink-200 to-purple-50"
+				}`}
+				aria-hidden="true"
 				>
-					<motion.div
-						initial={{ opacity: 0, y: 50 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5 }}
-						className="max-w-7xl mx-auto text-left px-6"
-					>
-						<h3 className="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
-							Meet Our Team
-						</h3>
-						<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-							{[
-								{
-									name: "Fraimer De La Cruz",
-									role: "Team Leader, Code Whisperer, UI Designer, Presenter",
-									image: "",
-								},
-								{
-									name: "Osei France",
-									role: "Code Whisperer",
-									image: "",
-								},
-								{
-									name: "Israel Seaton",
-									role: "Code Whisperer",
-									image: "",
-								},
-								{
-									name: "Mahish Dora",
-									role: "Researcher, UI Designer, Presenter, Bot Persona Developer",
-									image: "",
-								},
-								{
-									name: "Keshawn Jones",
-									role: "Researcher, Data Manager",
-									image: "",
-								},
-								{
-									name: "Ziara Rogers",
-									role: "UI Designer, Bot Persona Developer",
-									image: "",
-								},
-								{
-									name: "Christopher Francis",
-									role: "Data Manager",
-									image: "",
-								},
-							].map((member, index) => (
-								<motion.div
-									key={index}
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ duration: 0.3, delay: index * 0.1 }}
-									className={`flex flex-col items-center p-6 rounded-xl ${
-										darkMode ? "bg-[#190933]" : "bg-purple-50"
-									}`}
-								>
-									{member.image ? (
-										<Image
-											src={member?.image}
-											alt={member.name}
-											className="w-32 h-32 rounded-full mb-4"
-											width={32}
-											height={32}
-										/>
-									) : (
-										<PersonStanding className="w-32 h-32 rounded-full mb-4" />
-									)}
-									<h4
-										className={`text-xl font-bold ${
-											darkMode ? "text-white" : "text-gray-800"
-										}`}
-									>
-										{member.name}
-									</h4>
-									<p
-										className={`text-sm ${
-											darkMode ? "text-gray-300" : "text-gray-600"
-										}`}
-									>
-										{member.role}
-									</p>
-								</motion.div>
-							))}
-						</div>
-					</motion.div>
+				{/* This section intentionally left empty for visual transition */}
 				</section>
+				
+				<section
+				id="features"
+				className={`${darkMode ? "bg-[#241242]" : "bg-purple-50"} py-16`}
+				>
+				<motion.div
+					initial={{ opacity: 0, y: 50 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5 }}
+					className="max-w-7xl mx-auto text-left px-6"
+				>
+					<h3 className="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+					Teen-Friendly Experience
+					</h3>
+					<p className="text-xl mb-12 text-gray-600 dark:text-gray-300">
+					Our platform offers an avenue to empower teens with the knowledge and confidence to make informed and benefitical decisions related to sexual health. No judgment, just support.
+					</p>
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+					<motion.div
+						whileHover={{ scale: 1.05 }}
+						className={`p-6 rounded-xl ${
+						darkMode ? "bg-[#2d1854] text-gray-200" : "bg-white text-gray-800"
+						} shadow-lg`}
+					>
+						<h4 className="text-2xl font-bold mb-4 text-pink-500">Features</h4>
+						<ul className="space-y-2">
+						{[
+							"Get answers to sensitive questions",
+							"Learn about safe practices",
+							"Explore relationships and emotions",
+							"Understand your body better",
+						].map((item, index) => (
+							<motion.li
+							key={index}
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ delay: index * 0.1 }}
+							className="flex items-center"
+							>
+							<CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+							<span>{item}</span>
+							</motion.li>
+						))}
+						</ul>
+						<motion.div
+						whileHover={{ scale: 1.1 }}
+						className="mt-6"
+						>
+						<Link href="/evm-docs" className="text-pink-500 hover:text-pink-600 font-medium">
+							Learn more <ArrowRight className="inline-block ml-1" />
+						</Link>
+						</motion.div>
+					</motion.div>
+					
+					<motion.div
+						whileHover={{ scale: 1.05 }}
+						className={`p-6 rounded-xl ${
+						darkMode ? "bg-[#2d1854] text-gray-200" : "bg-white text-gray-800"
+						} shadow-lg`}
+					>
+						<h4 className="text-2xl font-bold mb-4 text-purple-500">Assurances</h4>
+						<ul className="space-y-2">
+						{[
+							"Access reliable health information",
+							"Chat safely and anonymously",
+							"Receive Sexual Health Tips Regularly",
+							"Access Multilingual Support"
+						].map((item, index) => (
+							<motion.li
+							key={index}
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ delay: index * 0.1 }}
+							className="flex items-center"
+							>
+							<CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+							<span>{item}</span>
+							</motion.li>
+						))}
+						</ul>
+						<motion.div
+						whileHover={{ scale: 1.1 }}
+						className="mt-6"
+						>
+						<Link href="/cadence-docs" className="text-purple-500 hover:text-purple-600 font-medium">
+							Learn more <ArrowRight className="inline-block ml-1" />
+						</Link>
+						</motion.div>
+					</motion.div>
+					</div>
+				</motion.div>
+				</section>
+
+				<section
+      id="glossary"
+      className={`${darkMode ? "bg-[#0f0721]" : "bg-white"} py-20`}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-7xl mx-auto text-left px-6"
+      >
+        <h3 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+          Explore Our Tailored Glossary
+        </h3>
+        <p className={`text-lg mb-12 ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+          Dive into our comprehensive glossary of Sexual Education terms, created to support teens at all stages.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          {[
+            {
+              icon: <Book size={48} />,
+              title: "Extensive Definitions",
+              description: "Clear, concise explanations of key Sex ED concepts."
+            },
+            {
+              icon: <Search size={48} />,
+              title: "Easy Navigation",
+              description: "Quickly find the terms you need with our user-friendly search and filter options."
+            },
+            {
+              icon: <RefreshCw size={48} />,
+              title: "Regular Updates",
+              description: "Stay current with the latest health terms through our commitment to frequent updates."
+            }
+          ].map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              className={`flex flex-col items-center p-6 rounded-xl ${
+                darkMode ? "bg-[#190933]" : "bg-purple-50"
+              }`}
+            >
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                className={`mb-4 ${darkMode ? "text-purple-400" : "text-purple-600"}`}
+              >
+                {feature.icon}
+              </motion.div>
+              <h4
+                className={`text-xl font-bold mb-2 ${
+                  darkMode ? "text-white" : "text-gray-800"
+                }`}
+              >
+                {feature.title}
+              </h4>
+              <p
+                className={`text-sm text-center ${
+                  darkMode ? "text-gray-300" : "text-gray-600"
+                }`}
+              >
+                {feature.description}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="flex justify-center">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link href="/Glossary" passHref>
+              <motion.button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-4 px-8 rounded-full text-xl transition duration-300 ease-in-out hover:from-pink-600 hover:to-purple-700 hover:shadow-lg flex items-center">
+                Explore
+                <ArrowRight className="ml-2 h-6 w-6" />
+              </motion.button>
+            </Link>
+          </motion.div>
+        </div>
+      </motion.div>
+    </section>
+
+				<section
+                    id="team"
+                    className={`${darkMode ? "bg-[#241242]" : "bg-purple-50"} py-16`}
+                >
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="max-w-7xl mx-auto text-left px-6"
+                    >
+                        <h3 className="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+                            Meet Our Team
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {[
+                                {
+                                    name: "Fraimer De La Cruz",
+                                    role: "Team Leader, Code Whisperer, UI Designer, Presenter",
+                                    image: "",
+                                },
+                                {
+                                    name: "Osei Francis",
+                                    role: "Code Whisperer",
+                                    image: "",
+                                },
+                                {
+                                    name: "Israel Seaton",
+                                    role: "Code Whisperer",
+                                    image: "",
+                                },
+                                {
+                                    name: "Mahish Dora",
+                                    role: "Researcher, UI Designer, Presenter, Bot Persona Developer",
+                                    image: "",
+                                },
+                                {
+                                    name: "Keshawn Jones",
+                                    role: "Researcher, Data Manager",
+                                    image: "",
+                                },
+                                {
+                                    name: "Ziara Rogers",
+                                    role: "UI Designer, Bot Persona Developer",
+                                    image: "",
+                                },
+                                {
+                                    name: "Christopher France",
+                                    role: "Data Manager",
+                                    image: "",
+                                },
+								{
+                                    name: "Adebona Josiah",
+                                    role: "Data Manager",
+                                    image: "",
+                                },
+                            ].map((member, index) => (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                                    className={`flex flex-col items-center p-6 rounded-xl ${
+                                        darkMode ? "bg-[#2d1854] text-gray-200" : "bg-white text-gray-800"
+                                    }`}
+                                >
+                                    {member.image ? (
+                                        <Image
+                                            src={member?.image}
+                                            alt={member.name}
+                                            className="w-32 h-32 rounded-full mb-4"
+                                            width={32}
+                                            height={32}
+                                        />
+                                    ) : (
+                                        <PersonStanding className="w-32 h-32 rounded-full mb-4" />
+                                    )}
+                                    <h4
+                                        className={`text-xl font-bold ${
+                                            darkMode ? "text-white" : "text-gray-800"
+                                        }`}
+                                    >
+                                        {member.name}
+                                    </h4>
+                                    <p
+                                        className={`text-sm ${
+                                            darkMode ? "text-gray-300" : "text-gray-600"
+                                        }`}
+                                    >
+                                        {member.role}
+                                    </p>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </motion.div>
+                </section>
 
 				<footer
 					id="contact"
