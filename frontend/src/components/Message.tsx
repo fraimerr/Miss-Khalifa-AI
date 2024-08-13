@@ -5,11 +5,11 @@ import { Volume2, Clipboard, Check, Bot, User } from "lucide-react";
 import TypewriterEffect from "./TypewritterEffect";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Logo from "../../public/miss_khalifa_ai.png";
+import Logo from "../../public/Offical_3High_Res_Logo.png";
 import ReactMarkdown from 'react-markdown';
 
 interface MessageProps {
-  message: { text: string; isBot: boolean };
+  message: { text: string; isBot: boolean; image?: string };
   index: number;
   copiedIndex: number | null;
   handleTextToSpeech: (text: string) => void;
@@ -50,6 +50,15 @@ const Message: React.FC<MessageProps> = ({
           </Avatar>
           <div className="bg-white dark:bg-[#241242] text-gray-800 dark:text-gray-200 px-4 py-3 rounded-xl shadow-md">
             <ReactMarkdown className="markdown-content">{message.text}</ReactMarkdown>
+            {message.image && (
+              <div className="mt-4">
+                <img 
+                  src={`data:image/png;base64,${message.image}`} 
+                  alt="Graph" 
+                  className="max-w-full h-auto rounded-lg"
+                />
+              </div>
+            )}
             <div className="flex mt-2 space-x-2">
               <Button
                 variant="ghost"

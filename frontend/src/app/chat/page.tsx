@@ -15,15 +15,15 @@ import ChatInterface from "../../components/ChatInterface";
 const ChatPage: React.FC = () => {
 	const [showDisclaimer, setShowDisclaimer] = useState(true);
 
-	// useEffect(() => {
-	//   const hasAccepted = localStorage.getItem('disclaimerAccepted');
-	//   if (hasAccepted) {
-	//     setShowDisclaimer(false);
-	//   }
-	// }, []);
+	useEffect(() => {
+	  const hasAccepted = localStorage.getItem('disclaimerAccepted');
+	  if (hasAccepted) {
+	    setShowDisclaimer(false);
+	  }
+	}, []);
 
 	const handleAccept = () => {
-		// localStorage.setItem('disclaimerAccepted', 'true');
+		localStorage.setItem('disclaimerAccepted', 'true');
 		setShowDisclaimer(false);
 	};
 
