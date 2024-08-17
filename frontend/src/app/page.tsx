@@ -26,7 +26,7 @@ import {
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import Logo from "../../public/Offical_3High_Res_Logo.png";
+import Logo from "../../public/miss_khalifa_ai.png";
 
 
 const HomePage = () => {
@@ -251,7 +251,7 @@ const HomePage = () => {
 					className="max-w-6xl mx-auto text-center px-4"
 				>
 					<h2 className="text-5xl font-extrabold mb-12 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
-					Discover Our Reason "Why?"
+					Discover Our Reason {"Why?"}
 					</h2>
 					<h2 className="text-3xl font-bold italic mb-12 text-transparent bg-clip-text bg-gradient-to-b from-pink-300 to-purple-300">
 					For Teens, By Teens

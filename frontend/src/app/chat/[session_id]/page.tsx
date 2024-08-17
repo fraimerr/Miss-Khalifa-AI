@@ -9,15 +9,10 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import ChatInterface from "../../components/chat/ChatInterface";
+} from "../../../components/ui/alert-dialog";
+import ChatInterface from "../../../components/chat/ChatInterface";
 
-interface Props {
-	params: {sessionId: string}
-}
-
-
-const ChatPage = ({ params}: Props) => {
+const ChatPage: React.FC = () => {
 	const [showDisclaimer, setShowDisclaimer] = useState(true);
 
 	useEffect(() => {
@@ -31,6 +26,8 @@ const ChatPage = ({ params}: Props) => {
 		localStorage.setItem('disclaimerAccepted', 'true');
 		setShowDisclaimer(false);
 	};
+
+	
 
 	return (
 		<div className="min-h-screen relative">

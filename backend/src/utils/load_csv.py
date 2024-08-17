@@ -41,11 +41,3 @@ def read_csv(file_path):
     except IOError as e:
         print(f"Error reading file {file_path}: {e}")
     return data
-
-
-if __name__ == "__main__":
-    try:
-        qa_data = load_csv("C/Users/oseifrancis/Desktop/DesktopF/VS_Code/Miss-Khalifa-AI/backend/data")
-        print(f"Loaded {len(qa_data)} questions from CSV files.")
-    except (FileNotFoundError, NotADirectoryError) as e:
-        print(f"Error: {e}")

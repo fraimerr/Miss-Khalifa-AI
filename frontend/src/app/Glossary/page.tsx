@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import './GlossaryPage.css';
-import Logo from "../../public/Offical_3High_Res_Logo.png";
+import Logo from "../../public/miss_khalifa_ai.png";
 
 
 interface GlossaryItem {
@@ -31,7 +31,7 @@ const GlossaryPage = () => {
   return (
     <div className="glossary-page">
       <div className="title-container">
-        <img src="/Offical_3High_Res_Logo.png" alt="Glossary Icon" width={40} height={40} className="rounded-full" />
+        <img src="/miss_khalifa_ai.png" alt="Glossary Icon" width={40} height={40} className="rounded-full" />
         <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">
           Glossary
         </h1>
