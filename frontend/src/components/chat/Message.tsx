@@ -15,6 +15,7 @@ interface MessageProps {
     chart?: {
       type: 'chart' | 'table'
       data: { year: string; value: number }[]
+      title: string
     }
   }
   index: number
@@ -56,7 +57,11 @@ const Message: React.FC<MessageProps> = ({
             </ReactMarkdown>
             {message.chart && (
               <div className="mt-4 w-full">
-                <DataVisualization type={message.chart.type} data={message.chart.data} />
+                <DataVisualization
+                  type={message.chart.type}
+                  data={message.chart.data}
+                  title={message.chart.title}
+                />
               </div>
             )}
             <div className="mt-2 flex space-x-2">

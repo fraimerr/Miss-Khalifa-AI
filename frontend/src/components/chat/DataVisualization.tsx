@@ -26,6 +26,7 @@ interface DataItem {
 interface ChartProps {
   type: 'chart' | 'table'
   data: DataItem[]
+  title: string
 }
 
 const chartConfig: ChartConfig = {
@@ -35,7 +36,7 @@ const chartConfig: ChartConfig = {
   },
 }
 
-const DataVisualization: React.FC<ChartProps> = ({ type, data }) => {
+const DataVisualization: React.FC<ChartProps> = ({ type, data, title }) => {
   if (!data || data.length === 0) {
     return <div>No data available for visualization</div>
   }
@@ -43,7 +44,7 @@ const DataVisualization: React.FC<ChartProps> = ({ type, data }) => {
   if (type === 'table') {
     return (
       <Table>
-        <TableCaption>Data Visualization Table</TableCaption>
+        <TableCaption>{title}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Year</TableHead>
@@ -63,21 +64,24 @@ const DataVisualization: React.FC<ChartProps> = ({ type, data }) => {
   }
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
-      <BarChart data={data}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="year"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-        />
-        <YAxis />
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="value" fill="var(--color-value)" radius={4} />
-      </BarChart>
-    </ChartContainer>
+    <div className="w-full">
+      <h3 className="mb-4 text-center text-lg font-semibold">{title}</h3>
+      <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+        <BarChart data={data}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="year"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+          />
+          <YAxis />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          <Bar dataKey="value" fill="var(--color-value)" radius={4} />
+        </BarChart>
+      </ChartContainer>
+    </div>
   )
 }
 
