@@ -22,7 +22,6 @@ import { useToast } from '../ui/use-toast'
 import { Button } from '../ui/button'
 import SettingsDialog from './settings/SettingsDialog'
 import { ScrollArea, ScrollBar } from '../ui/scroll-area'
-import DataVisualization from './DataVisualization'
 
 interface Message {
   text: string
@@ -225,7 +224,7 @@ const ChatInterface: React.FC = () => {
                   className="flex w-full items-center space-x-2 rounded-md border border-white/20 bg-white/10 px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-white/20"
                 >
                   <MessageSquare className="text-white" size={20} />
-                  <span className="font-medium text-white">Chats</span>
+                  <span className="font-medium text-white">Home</span>
                 </Link>
                 <Link
                   href="/glossary"

@@ -3,13 +3,15 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import CharacterTextSplitter
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
+from langchain.memory import ConversationBufferMemory
+from langchain_core.messages import HumanMessage, AIMessage
 from dotenv import load_dotenv
-import pandas as pd
+from utils.load_csv import load_csv
 
 load_dotenv()
 
@@ -20,14 +22,20 @@ CORS(app)
 embeddings = OpenAIEmbeddings()
 chat = ChatOpenAI(model="gpt-4", temperature=0.7, openai_api_key=os.getenv("OPENAI_API_KEY"))
 
-# Load and preprocess the CSV data
-file_path = "C:\\Users\\fraimer\\Desktop\\MissKhalifaAI\\backend\\data/SexED-Statistics.csv"
-df = pd.read_csv(file_path)
-text_data = df.to_string()
+# Load all CSV files from the data folder
+data_folder_path = "C:\\Users\\fraimer\\Desktop\\MissKhalifaAI\\backend\\data\\questions"
+qa_data = load_csv(data_folder_path)
+
+# Prepare text data for vectorization
+text_data = []
+for question, data in qa_data.items():
+    text_data.append(f"Question: {question}\nAnswer: {data['Answer']}\nLink: {data['Link']}")
+
+print(text_data)
 
 # Split the text into chunks
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-texts = text_splitter.split_text(text_data)
+texts = text_splitter.split_text("\n\n".join(text_data))
 
 # Create the vector store
 vectorstore = FAISS.from_texts(texts, embeddings)
@@ -59,16 +67,16 @@ If the question includes the keywords "plot", "table", "hiv", "chlamydia", "gono
   ]
 }}
 
-Use the most appropriate visualization type based on the data and question.
+Use the most appropriate visualization type based on the data and question. If the data includes a link, please display it in the message as a hyperlink.
 
 Here's the context: {context}
-
-Now, here's the question from a teen: {input}
-
-Respond to the question using the guidelines above and based on the information you have. If the question is not covered by the data, clearly state that you don't know or don't have the information.
 """),
+    MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{input}")
 ])
+
+# Initialize memory
+memory = ConversationBufferMemory(return_messages=True, output_key="answer")
 
 # Create the retrieval chain
 retriever = vectorstore.as_retriever()
@@ -82,9 +90,18 @@ def chat():
     if not user_text:
         return jsonify({"error": "No message provided"}), 400
 
+    # Retrieve chat history for this session
+    chat_history = memory.load_memory_variables({}).get("chat_history", [])
+
     # Use the retrieval chain to get a response
-    response = retrieval_chain.invoke({"input": user_text})
+    response = retrieval_chain.invoke({
+        "input": user_text,
+        "chat_history": chat_history
+    })
     ai_message = response['answer']
+
+    # Save the new messages to memory
+    memory.save_context({"input": user_text}, {"answer": ai_message})
 
     try:
         json_response = json.loads(ai_message)
