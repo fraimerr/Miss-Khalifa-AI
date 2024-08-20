@@ -22,6 +22,7 @@ import { useToast } from '../ui/use-toast'
 import { Button } from '../ui/button'
 import SettingsDialog from './settings/SettingsDialog'
 import { ScrollArea, ScrollBar } from '../ui/scroll-area'
+import { ElevenLabsClient, play } from 'elevenlabs'
 
 interface Message {
   text: string
@@ -37,13 +38,21 @@ const ChatInterface: React.FC = () => {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentTipIndex, setCurrentTipIndex] = useState(0)
-  const [sessions, setSessions] = useState<string[]>([])
   const bottomRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
 
-  const handleTextToSpeech = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text)
-    window.speechSynthesis.speak(utterance)
+  const handleTextToSpeech = async (text: string) => {
+    const elevenlabs = new ElevenLabsClient({
+      apiKey: 'sk_b6c9036f32ff1483778f567f9600e7f54f20be7d4655b038',
+    })
+
+    const audio = await elevenlabs.generate({
+      voice: 'Rachel',
+      text: text,
+      model_id: 'eleven_multilingual_v2',
+    });
+
+    await play(audio);
   }
 
   const handleCopyText = (text: string, index: number) => {
@@ -100,40 +109,6 @@ const ChatInterface: React.FC = () => {
       }
     }
   }
-
-  const getSessions = async () => {
-    try {
-      const response = await axios.get('http://localhost:5001/sessions')
-      setSessions(response.data.sessions)
-    } catch (error) {
-      console.error('Error fetching sessions:', error)
-    }
-  }
-
-  const fetchSessionMessages = async (sessionId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5001/sessions/${sessionId}`
-      )
-      setMessages(
-        response.data.messages.map((msg: any) => ({
-          text: msg.text,
-          isBot: msg.isBot,
-          chart: msg.chart, // Optional
-        }))
-      )
-    } catch (error) {
-      console.error('Error fetching session messages:', error)
-    }
-  }
-
-  const handleSessionClick = async (sessionId: string) => {
-    await fetchSessionMessages(sessionId)
-  }
-
-  useEffect(() => {
-    getSessions()
-  }, [])
 
   useEffect(() => {
     document.body.classList.toggle('dark', darkMode)
@@ -242,24 +217,6 @@ const ChatInterface: React.FC = () => {
                 </Link>
                 <SettingsDialog darkMode={darkMode} setDarkMode={setDarkMode} />
               </nav>
-
-              <div className="mt-4">
-                <h3 className="mb-2 text-lg font-bold text-white">
-                  Previous Chats
-                </h3>
-                <ul className="space-y-2">
-                  {sessions.map((session, index) => (
-                    <li key={index} className="text-white">
-                      <button
-                        className="w-full rounded-md bg-white/10 p-2 text-left transition-all hover:bg-white/20"
-                        onClick={() => handleSessionClick(session)}
-                      >
-                        {session}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
 
             <div className="border-t border-white/20 p-4">
