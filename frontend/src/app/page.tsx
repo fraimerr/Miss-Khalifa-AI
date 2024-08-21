@@ -209,19 +209,8 @@ const HomePage = () => {
 							transition={{ duration: 0.5 }}
 							className="relative"
 						>
-							{/* <div className="bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl h-80 md:h-full w-full opacity-20"></div> */}
+							<div className="bg-gradient-to-br from-pink-400 to-purple-600 rounded-2xl h-80 md:h-full w-full opacity-20"></div>
 							<div className="absolute inset-0 flex items-center justify-center">
-								{/* <svg
-									className="w-3/4 h-3/4"
-									viewBox="0 0 200 200"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fill={darkMode ? "#6B46C1" : "#9F7AEA"}
-										d="M45.7,-78.3C58.9,-71.1,69.2,-58.3,76.4,-44.1C83.6,-29.9,87.8,-14.9,87.8,0C87.8,14.9,83.7,29.8,76.4,43.8C69.2,57.8,58.9,71,45.6,78.5C32.3,86,16.2,87.9,0.1,87.7C-15.9,87.5,-31.8,85.3,-45.7,77.8C-59.6,70.3,-71.5,57.5,-78.6,43C-85.7,28.5,-88,14.3,-87.4,0.3C-86.9,-13.6,-83.5,-27.2,-76.4,-39.7C-69.2,-52.2,-58.3,-63.6,-45.3,-70.9C-32.2,-78.3,-16.1,-81.6,0.3,-82.1C16.7,-82.6,33.5,-80.3,45.7,-78.3Z"
-										transform="translate(100 100)"
-									/>
-								</svg> */}
 								<Image
 									src={Logo}
 									width={400}

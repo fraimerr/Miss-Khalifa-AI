@@ -1,20 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import Message from './Message'
-import {
-  HelpCircle,
-  Zap,
-  Code,
-  Book,
-  Heart,
-  Calendar,
-  Info,
-  Pill,
-  Shield,
-  Stethoscope,
-  Users,
-} from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
 
 interface ChatMessagesProps {
   messages: { text: string; isBot: boolean }[]
@@ -109,24 +97,25 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
             variants={containerVariants}
             className="absolute inset-0 flex items-center justify-center"
           >
-            <div className="w-full max-w-4xl">
+            <div className="w-full text-center max-w-4xl">
               <motion.h2
                 variants={itemVariants}
-                className="mb-8 text-center text-5xl font-bold"
+                className="mb-8 text-5xl font-bold"
               >
-								👋
-                <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                  Hello, Name
-                </span>
-                <br />
+                👋
                 <span style={gradientStyle}>
-                  Welcome! How can I assist you today?
+                  Welcome!
+                  <br />
+                  How can I assist you today?
                 </span>
               </motion.h2>
-              <motion.div className="w-96 items-center">
-                <div className="mb-8">
-                  <h3 className="mb-2 text-sm font-semibold">Tips</h3>
-                  <div className="rounded bg-white/10 p-3">
+              <motion.div className="mb-8 flex items-center justify-center p-4">
+                <div className="w-full rounded-md border border-purple-500/75 bg-gradient-to-r from-violet-950/40 to-purple-900/10 p-4">
+                  <div className="flex space-x-2">
+                    <Sparkles strokeWidth={3} />
+                    <h3 className="mb-2 text-lg font-semibold">Tip</h3>
+                  </div>
+                  <div className="">
                     <p className="text-sm">{currentTip}</p>
                   </div>
                 </div>

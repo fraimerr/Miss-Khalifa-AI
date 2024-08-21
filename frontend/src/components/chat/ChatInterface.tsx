@@ -22,7 +22,7 @@ import { useToast } from '../ui/use-toast'
 import { Button } from '../ui/button'
 import SettingsDialog from './settings/SettingsDialog'
 import { ScrollArea, ScrollBar } from '../ui/scroll-area'
-import { ElevenLabsClient, play } from 'elevenlabs'
+import { createAudioStreamFromText } from '@/lib/textospeech'
 
 interface Message {
   text: string
@@ -42,17 +42,7 @@ const ChatInterface: React.FC = () => {
   const { toast } = useToast()
 
   const handleTextToSpeech = async (text: string) => {
-    const elevenlabs = new ElevenLabsClient({
-      apiKey: 'sk_b6c9036f32ff1483778f567f9600e7f54f20be7d4655b038',
-    })
-
-    const audio = await elevenlabs.generate({
-      voice: 'Rachel',
-      text: text,
-      model_id: 'eleven_multilingual_v2',
-    });
-
-    await play(audio);
+    await createAudioStreamFromText(text);
   }
 
   const handleCopyText = (text: string, index: number) => {
@@ -72,7 +62,7 @@ const ChatInterface: React.FC = () => {
       setInput('')
       setIsThinking(true)
       try {
-        const response = await axios.post('http://localhost:5001/chat', {
+        const response = await axios.post('http://192.168.50.147:5001/chat', {
           message: input,
         })
 
