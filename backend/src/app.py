@@ -9,9 +9,7 @@ from langchain_text_splitters import CharacterTextSplitter
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain.memory import ConversationBufferMemory
 from langchain_core.chat_history import (
-    BaseChatMessageHistory,
     InMemoryChatMessageHistory,
 )
 from langchain_core.messages import HumanMessage, AIMessage
@@ -28,12 +26,9 @@ embeddings = OpenAIEmbeddings()
 chat = ChatOpenAI(
     model="gpt-4o", temperature=0.7, openai_api_key=os.getenv("OPENAI_API_KEY")
 )
-
 # Load all CSV files from the data folder
-data_folder_path = (
-    "C:\\Users\\fraimer\\Desktop\\MissKhalifaAI\\backend\\data\\questions"
-)
-qa_data = load_csv(data_folder_path)
+data_folder_path = os.getenv("DATA_FOLDER_PATH")
+qa_data = load_csv(data_folder_path + "/data")
 
 # Prepare text data for vectorization
 text_data = []

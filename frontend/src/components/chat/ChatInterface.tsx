@@ -62,7 +62,7 @@ const ChatInterface: React.FC = () => {
       setInput('')
       setIsThinking(true)
       try {
-        const response = await axios.post('http://192.168.50.147:5001/chat', {
+        const response = await axios.post('http://localhost:5001/chat', {
           message: input,
         })
 
