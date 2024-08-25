@@ -1,6 +1,26 @@
+import datetime
+import os
 from pathlib import Path
 import csv
 import chardet
+
+
+def write_to_csv(user_input):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    filename = (
+        "C:\\Users\\fraimer\\Desktop\\MissKhalifaAI\\backend\\data\\user_inputs.csv"
+    )
+
+    file_exists = os.path.isfile(filename)
+
+    with open(filename, "a", newline="") as csvfile:
+        fieldnames = ["timestamp", "user_input"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        if not file_exists:
+            writer.writeheader()
+
+        writer.writerow({"timestamp": timestamp, "user_input": user_input})
 
 
 def load_csv(folder_path):

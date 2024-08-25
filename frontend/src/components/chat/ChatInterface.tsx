@@ -22,7 +22,6 @@ import { useToast } from '../ui/use-toast'
 import { Button } from '../ui/button'
 import SettingsDialog from './settings/SettingsDialog'
 import { ScrollArea, ScrollBar } from '../ui/scroll-area'
-import { createAudioStreamFromText } from '@/lib/textospeech'
 
 interface Message {
   text: string
@@ -38,11 +37,20 @@ const ChatInterface: React.FC = () => {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentTipIndex, setCurrentTipIndex] = useState(0)
+  const [sessionId, setSessionId] = useState("")
   const bottomRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
 
-  const handleTextToSpeech = async (text: string) => {
-    await createAudioStreamFromText(text);
+  useEffect(() => {
+    const storedSessionId = localStorage.getItem('chatSessionId');
+    if (storedSessionId) {
+      setSessionId(storedSessionId);
+    }
+  }, [])
+
+  const handleTextToSpeech = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text)
+    window.speechSynthesis.speak(utterance)
   }
 
   const handleCopyText = (text: string, index: number) => {
@@ -62,11 +70,17 @@ const ChatInterface: React.FC = () => {
       setInput('')
       setIsThinking(true)
       try {
-        const response = await axios.post('http://localhost:5001/chat', {
+        const response = await axios.post('http://192.168.50.147:5001/chat', {
           message: input,
+          session_id: sessionId,
         })
 
         console.log('Received response from backend:', response.data)
+
+        if (response.data.session_id) {
+          setSessionId(response.data.session_id);
+          localStorage.setItem('chatSessionId', response.data.session_id);
+        }
 
         if (response.data.chart) {
           setMessages((prev) => [
@@ -154,6 +168,7 @@ const ChatInterface: React.FC = () => {
       </button>
 
       {/* Sidebar */}
+      {/* Sidebar */}
       <AnimatePresence>
         {(isSidebarOpen || window.innerWidth >= 768) && (
           <motion.div
@@ -166,8 +181,8 @@ const ChatInterface: React.FC = () => {
               damping: 30,
             }}
             className={`h-screen w-64 ${
-              darkMode ? 'bg-[#190933]' : 'bg-gray-100'
-            } fixed left-0 top-0 z-40 flex flex-col overflow-y-auto text-white shadow-lg md:sticky`}
+              darkMode ? 'bg-[#190933] text-white' : 'bg-gray-100 text-gray-900'
+            } fixed left-0 top-0 z-40 flex flex-col overflow-y-auto shadow-lg md:sticky`}
           >
             <div className="flex-grow p-4">
               <div className="mb-8 flex items-center space-x-3">
@@ -186,31 +201,50 @@ const ChatInterface: React.FC = () => {
               <nav className="mb-8 space-y-4">
                 <Link
                   href="/"
-                  className="flex w-full items-center space-x-2 rounded-md border border-white/20 bg-white/10 px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-white/20"
+                  className={`flex w-full items-center space-x-2 rounded-md border px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 ${
+                    darkMode
+                      ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+                      : 'border-gray-300 bg-white text-gray-900 hover:bg-gray-100'
+                  }`}
                 >
-                  <MessageSquare className="text-white" size={20} />
-                  <span className="font-medium text-white">Home</span>
+                  <MessageSquare
+                    className={darkMode ? 'text-white' : 'text-gray-900'}
+                    size={20}
+                  />
+                  <span className="font-medium">Home</span>
                 </Link>
                 <Link
-                  href="/glossary"
-                  className="flex w-full items-center space-x-2 rounded-md border border-white/20 bg-white/10 px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-white/20"
+                  href="/Glossary"
+                  className={`flex w-full items-center space-x-2 rounded-md border px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 ${
+                    darkMode
+                      ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+                      : 'border-gray-300 bg-white text-gray-900 hover:bg-gray-100'
+                  }`}
                 >
-                  <Book className="text-white" />
+                  <Book className={darkMode ? 'text-white' : 'text-gray-900'} />
                   <span>Glossary</span>
                 </Link>
                 <Link
                   href=""
-                  className="flex w-full items-center space-x-2 rounded-md border border-white/20 bg-white/10 px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-white/20"
+                  className={`flex w-full items-center space-x-2 rounded-md border px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 ${
+                    darkMode
+                      ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+                      : 'border-gray-300 bg-white text-gray-900 hover:bg-gray-100'
+                  }`}
                 >
-                  <User className="text-white" />
+                  <User className={darkMode ? 'text-white' : 'text-gray-900'} />
                   <span>Feedback</span>
                 </Link>
                 <SettingsDialog darkMode={darkMode} setDarkMode={setDarkMode} />
               </nav>
             </div>
 
-            <div className="border-t border-white/20 p-4">
-              <div className="flex items-center justify-between rounded-full bg-white/10 p-1">
+            <div
+              className={`border-t p-4 ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
+            >
+              <div
+                className={`flex items-center justify-between rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'} p-1`}
+              >
                 <button
                   className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                     !darkMode
@@ -225,7 +259,7 @@ const ChatInterface: React.FC = () => {
                   className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                     darkMode
                       ? 'bg-gray-800 text-white'
-                      : 'text-white/80 hover:text-white'
+                      : 'text-gray-800 hover:text-gray-900'
                   }`}
                   onClick={() => setDarkMode(true)}
                 >
@@ -313,7 +347,7 @@ const ChatInterface: React.FC = () => {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your message..."
+                  placeholder="Chat with Miss Khalifa..."
                   className="w-full rounded-full bg-white px-6 py-4 text-base text-gray-900 shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:bg-[#241242] dark:text-gray-100 dark:focus:ring-purple-500"
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 />

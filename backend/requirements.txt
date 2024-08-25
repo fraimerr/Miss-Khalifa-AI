@@ -1,5 +1,6 @@
 Flask
 flask-cors
+flask_limiter
 langchain-openai
 langchain-community
 langchain-text-splitters
