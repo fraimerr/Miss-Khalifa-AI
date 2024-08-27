@@ -37,14 +37,14 @@ const ChatInterface: React.FC = () => {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentTipIndex, setCurrentTipIndex] = useState(0)
-  const [sessionId, setSessionId] = useState("")
+  const [sessionId, setSessionId] = useState('')
   const bottomRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
 
   useEffect(() => {
-    const storedSessionId = localStorage.getItem('chatSessionId');
+    const storedSessionId = localStorage.getItem('chatSessionId')
     if (storedSessionId) {
-      setSessionId(storedSessionId);
+      setSessionId(storedSessionId)
     }
   }, [])
 
@@ -70,7 +70,7 @@ const ChatInterface: React.FC = () => {
       setInput('')
       setIsThinking(true)
       try {
-        const response = await axios.post('http://192.168.50.147:5001/chat', {
+        const response = await axios.post('http://192.168.50.147:5001/api/v1/chat', {
           message: input,
           session_id: sessionId,
         })
@@ -78,8 +78,8 @@ const ChatInterface: React.FC = () => {
         console.log('Received response from backend:', response.data)
 
         if (response.data.session_id) {
-          setSessionId(response.data.session_id);
-          localStorage.setItem('chatSessionId', response.data.session_id);
+          setSessionId(response.data.session_id)
+          localStorage.setItem('chatSessionId', response.data.session_id)
         }
 
         if (response.data.chart) {
@@ -242,30 +242,10 @@ const ChatInterface: React.FC = () => {
             <div
               className={`border-t p-4 ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
             >
-              <div
-                className={`flex items-center justify-between rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'} p-1`}
-              >
-                <button
-                  className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                    !darkMode
-                      ? 'bg-white text-gray-800'
-                      : 'text-white/80 hover:text-white'
-                  }`}
-                  onClick={() => setDarkMode(false)}
-                >
-                  Light
-                </button>
-                <button
-                  className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                    darkMode
-                      ? 'bg-gray-800 text-white'
-                      : 'text-gray-800 hover:text-gray-900'
-                  }`}
-                  onClick={() => setDarkMode(true)}
-                >
-                  Dark
-                </button>
-              </div>
+              <p className="text-center text-xs text-gray-300">
+                Created by Pink Panthers @ Python & Generative AI Summer Camp
+                2024, Saint Kitts
+              </p>
             </div>
           </motion.div>
         )}

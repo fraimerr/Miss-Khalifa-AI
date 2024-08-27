@@ -38,7 +38,8 @@ chat = ChatOpenAI(
 )
 
 # Load all CSV files from the data folder
-data_folder_path = "C:\\Users\\fraimer\\Desktop\\MissKhalifaAI\\backend\\data\\questions"
+data_folder_path = os.path.join(os.getcwd(), "data", "questions")
+print(data_folder_path)
 qa_data = load_csv(data_folder_path)
 
 # Prepare text data for vectorization
@@ -180,7 +181,7 @@ conversational_rag_chain = RunnableWithMessageHistory(
     output_messages_key="answer",
 )
 
-@app.route("/chat", methods=["POST"])
+@app.route("/api/v1/chat", methods=["POST"])
 @limiter.limit("5 per minute")
 def chat():
     user_text = request.json.get("message")
@@ -236,4 +237,4 @@ def before_request():
     session_manager.clean_sessions()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
