@@ -6,3 +6,5 @@ langchain-community
 langchain-text-splitters
 faiss-cpu
 python-dotenv
+Chroma==0.2.0
+chromadb==0.4.20
