@@ -70,7 +70,7 @@ const ChatInterface: React.FC = () => {
       setInput('')
       setIsThinking(true)
       try {
-        const response = await axios.post('http://192.168.50.147:5001/api/v1/chat', {
+        const response = await axios.post('http://localhost:5000/api/v1/chat', {
           message: input,
           session_id: sessionId,
         })

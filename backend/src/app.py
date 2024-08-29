@@ -8,7 +8,7 @@ from flask_limiter.util import get_remote_address
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.vectorstores import FAISS
-from langchain_text_splitters import CharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain_core.runnables.history import RunnableWithMessageHistory
@@ -39,21 +39,22 @@ chat = ChatOpenAI(
 
 # Load all CSV files from the data folder
 data_folder_path = os.path.join(os.getcwd(), "data", "questions")
-print(data_folder_path)
-qa_data = load_csv(data_folder_path)
+text_data = load_csv(data_folder_path)
+
+if not text_data:
+    print("Error: No data was loaded. Please check your CSV files.")
+    exit(1)
 
 # Prepare text data for vectorization
-text_data = [
-    f"Question: {question}\nAnswer: {data['Answer']}\nLink: {data['Link']}"
-    for question, data in qa_data.items()
-]
-
-# print(text_data)
-
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 texts = text_splitter.split_text("\n\n".join(text_data))
+
+if not texts:
+    print("Error: No text chunks were created. Please check your data.")
+    exit(1)
+
 vectorstore = FAISS.from_texts(texts, embeddings)
-retriever = vectorstore.as_retriever()
+retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
 contextualize_q_system_prompt = """
 Given a chat history and the latest user question 
@@ -96,15 +97,14 @@ If appropriate, use emojis or common teen slang, but don't overdo it.
 If the answer is not in the context provided, let the user know that you do not know the answer.
 If you don't know the answer, just say that you don't know, don't try to make up an answer. 
 Do not answer questions that are not in the data provided. AT ALL.
-For doctor information, provide the doctor's specialty, location, and phone number. 
+For doctor information, provide the doctor's specialty, location, and phone number if available. 
 For immediate medical attention, direct to JNF Hospital or call 911. 
 Only suggest health centers or clinics from the provided data. 
-If asked to display data, return a JSON object with the following format: 
+If the question includes the keywords "plot", "table", "hiv", "chlamydia", "gonorrhea", or "syphilis", return a JSON object of the data over the last 5 years. The JSON should include the type of chart or if it should be a table, a title for the visualization, and a response from you. ONLY RETURN THE DATA. Use the following format:
 {chart_data_json_format}
 
 Here's the context: {{context}}
 """
-
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -231,10 +231,34 @@ def chat():
         app.logger.error(f"An error occurred: {str(e)}")
         return jsonify({"error": "An internal error occurred"}), 500
     
-@app.before_request
-def before_request():
-    print(session_manager)
-    session_manager.clean_sessions()
+@app.route("/api/v1/test_vector_store", methods=["POST"])
+def test_vector_store():
+    query = request.json.get("query")
+    if not query:
+        return jsonify({"error": "No query provided"}), 400
+
+    try:
+        # Perform a similarity search
+        results = vectorstore.similarity_search(query, k=3)
+        
+        # Format the results
+        formatted_results = [
+            {
+                "content": doc.page_content,
+                "metadata": doc.metadata,
+                "similarity": doc.similarity  # Note: similarity score might not be available in all cases
+            }
+            for doc in results
+        ]
+
+        return jsonify({
+            "success": True,
+            "results": formatted_results
+        })
+    except Exception as e:
+        app.logger.error(f"An error occurred during vector store testing: {str(e)}")
+        return jsonify({"error": "An error occurred during vector store testing"}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

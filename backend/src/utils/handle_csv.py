@@ -7,13 +7,13 @@ import chardet
 
 def write_to_csv(user_input):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    filename = (
-        "C:\\Users\\fraimer\\Desktop\\MissKhalifaAI\\backend\\data\\user_inputs.csv"
-    )
+    filename = Path(os.getcwd()) / "data" / "user_inputs.csv"
+    
+    os.makedirs(filename.parent, exist_ok=True)
+    
+    file_exists = filename.exists()
 
-    file_exists = os.path.isfile(filename)
-
-    with open(filename, "a", newline="") as csvfile:
+    with filename.open("a", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["timestamp", "user_input"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -24,8 +24,8 @@ def write_to_csv(user_input):
 
 
 def load_csv(folder_path):
-    qa_data = {}
-    folder = Path(folder_path).resolve(strict=True)
+    qa_data = []
+    folder = Path(folder_path).resolve()
 
     if not folder.exists():
         raise FileNotFoundError(
@@ -37,27 +37,34 @@ def load_csv(folder_path):
         )
 
     for csv_file in folder.glob("*.csv"):
-        qa_data.update(read_csv(csv_file))
+        qa_data.extend(read_csv(csv_file))
+
+    if not qa_data:
+        print(f"Warning: No data was loaded from the CSV files in {folder_path}")
 
     return qa_data
 
 
 def read_csv(file_path):
-    data = {}
+    data = []
     try:
         with file_path.open("rb") as rawfile:
-            result = chardet.detect(rawfile.read())
+            result = chardet.detect(rawfile.read(1024))
         encoding = result["encoding"]
 
-        with file_path.open("r", encoding=encoding) as csvfile:
-            csv_reader = csv.DictReader(csvfile)
+        with file_path.open("r", encoding=encoding, newline='') as csvfile:
+            csv_reader = csv.reader(csvfile)
+            next(csv_reader, None)  # Skip the header row
             for row in csv_reader:
-                question = row.get("Questions", "").lower()
-                if question:
-                    data[question] = {
-                        "Answer": row.get("Answers", ""),
-                        "Link": row.get("Links", ""),
-                    }
+                if len(row) >= 2:
+                    question = row[0].strip()
+                    answer = row[1].strip()
+                    entry = f"Q: {question}\nA: {answer}"
+                    if len(row) > 2:
+                        link = row[2].strip()
+                        if link:
+                            entry += f"\nLink: {link}"
+                    data.append(entry)
     except IOError as e:
         print(f"Error reading file {file_path}: {e}")
     return data
