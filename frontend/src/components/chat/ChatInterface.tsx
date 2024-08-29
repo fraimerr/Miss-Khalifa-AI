@@ -2,26 +2,31 @@
 import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import ChatMessages from '@/components/chat/ChatMessages'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
+  Menu,
+  Book,
+  MessageSquare,
+  User,
+  X,
   Send,
   Calendar,
   Shield,
   Stethoscope,
   Users,
 } from 'lucide-react'
+import Image from 'next/image'
+import Logo from '../../../public/miss_khalifa_ai.png'
+import Link from 'next/link'
 import { useToast } from '../ui/use-toast'
 import { Button } from '../ui/button'
+import SettingsDialog from './settings/SettingsDialog'
 import { ScrollArea, ScrollBar } from '../ui/scroll-area'
 
 interface Message {
   text: string
   isBot: boolean
-  chart?: {
-    type: 'chart' | 'table'
-    data: { year: string; value: number }[]
-    title: string
-  }
+  image?: string
 }
 
 const ChatInterface: React.FC = () => {
@@ -65,13 +70,10 @@ const ChatInterface: React.FC = () => {
       setInput('')
       setIsThinking(true)
       try {
-        const response = await axios.post(
-          'http://localhost:5000/api/v1/chat',
-          {
-            message: input,
-            session_id: sessionId,
-          }
-        )
+        const response = await axios.post('http://192.168.50.147:5001/api/v1/chat', {
+          message: input,
+          session_id: sessionId,
+        })
 
         console.log('Received response from backend:', response.data)
 
@@ -157,6 +159,98 @@ const ChatInterface: React.FC = () => {
 
   return (
     <div className={`flex h-screen overflow-hidden ${darkMode ? 'dark' : ''}`}>
+      {/* Sidebar Toggle Button */}
+      <button
+        className="fixed left-4 top-4 z-50 rounded-full bg-gray-800 p-2 text-white md:hidden"
+        onClick={toggleSidebar}
+      >
+        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Sidebar */}
+      {/* Sidebar */}
+      <AnimatePresence>
+        {(isSidebarOpen || window.innerWidth >= 768) && (
+          <motion.div
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{
+              type: 'spring',
+              stiffness: 300,
+              damping: 30,
+            }}
+            className={`h-screen w-64 ${
+              darkMode ? 'bg-[#190933] text-white' : 'bg-gray-100 text-gray-900'
+            } fixed left-0 top-0 z-40 flex flex-col overflow-y-auto shadow-lg md:sticky`}
+          >
+            <div className="flex-grow p-4">
+              <div className="mb-8 flex items-center space-x-3">
+                <Image
+                  src={Logo}
+                  alt="Miss Khalifa AI"
+                  className="h-8 w-8"
+                  height={48}
+                  width={48}
+                />
+                <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-2xl font-extrabold text-transparent">
+                  Miss Khalifa AI
+                </span>
+              </div>
+
+              <nav className="mb-8 space-y-4">
+                <Link
+                  href="/"
+                  className={`flex w-full items-center space-x-2 rounded-md border px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 ${
+                    darkMode
+                      ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+                      : 'border-gray-300 bg-white text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <MessageSquare
+                    className={darkMode ? 'text-white' : 'text-gray-900'}
+                    size={20}
+                  />
+                  <span className="font-medium">Home</span>
+                </Link>
+                <Link
+                  href="/Glossary"
+                  className={`flex w-full items-center space-x-2 rounded-md border px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 ${
+                    darkMode
+                      ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+                      : 'border-gray-300 bg-white text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Book className={darkMode ? 'text-white' : 'text-gray-900'} />
+                  <span>Glossary</span>
+                </Link>
+                <Link
+                  href=""
+                  className={`flex w-full items-center space-x-2 rounded-md border px-4 py-2 text-left shadow-lg backdrop-blur-md transition-all duration-300 ${
+                    darkMode
+                      ? 'border-white/20 bg-white/10 text-white hover:bg-white/20'
+                      : 'border-gray-300 bg-white text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <User className={darkMode ? 'text-white' : 'text-gray-900'} />
+                  <span>Feedback</span>
+                </Link>
+                <SettingsDialog darkMode={darkMode} setDarkMode={setDarkMode} />
+              </nav>
+            </div>
+
+            <div
+              className={`border-t p-4 ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
+            >
+              <p className="text-center text-xs text-gray-300">
+                Created by Pink Panthers @ Python & Generative AI Summer Camp
+                2024, Saint Kitts
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         <main className="flex h-full flex-1 flex-col bg-gray-50 transition-all duration-300 ease-in-out dark:bg-[#0f0721]">
@@ -205,7 +299,7 @@ const ChatInterface: React.FC = () => {
               />
             </motion.div>
           )}
-          <div className="relative pb-6">
+          <div className="pb-6">
             <motion.div
               className="mx-auto w-full max-w-4xl px-4"
               initial={{ opacity: 0, y: 20 }}
@@ -228,7 +322,6 @@ const ChatInterface: React.FC = () => {
                 </div>
                 <ScrollBar orientation="horizontal" className="h-0" />
               </ScrollArea>
-
               <div className="relative">
                 <input
                   type="text"
