@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import Message from './Message'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageSquare, Lightbulb } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 
 interface ChatMessagesProps {
-  messages: { text: string; isBot: boolean; isLoading?: boolean }[]
+  messages: { text: string; isBot: boolean }[]
   copiedIndex: number | null
   handleTextToSpeech: (text: string) => void
   handleCopyText: (text: string, index: number) => void
   bottomRef: React.RefObject<HTMLDivElement>
-  isThinking: boolean
 }
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({
@@ -19,8 +18,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   handleTextToSpeech,
   handleCopyText,
   bottomRef,
-  isThinking,
 }) => {
+  const [gradientPosition, setGradientPosition] = useState(100)
+  const [textColor, setTextColor] = useState('transparent')
   const [currentTip, setCurrentTip] = useState('')
 
   useEffect(() => {
@@ -39,45 +39,86 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
       })
   }, [])
 
+  useEffect(() => {
+    if (messages.length === 0) {
+      const animationInterval = setInterval(() => {
+        setGradientPosition((prev) => {
+          if (prev <= 0) {
+            clearInterval(animationInterval)
+            setTimeout(() => setTextColor('currentColor'), 300)
+            return 0
+          }
+          return prev - 2
+        })
+      }, 20)
+
+      return () => clearInterval(animationInterval)
+    }
+  }, [messages.length])
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        when: 'beforeChildren',
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+    },
+  }
+
+  const gradientStyle = {
+    backgroundImage:
+      'linear-gradient(90deg, #ec4899, #8b5cf6, #ec4899, currentColor)',
+    backgroundSize: '300% 100%',
+    color: textColor,
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+    transition: 'color 0.5s ease',
+  }
+
   return (
-    <ScrollArea className="relative flex-1 p-4 bg-white dark:bg-[#0f0721]">
+    <ScrollArea className="over relative flex-1 p-4">
       <AnimatePresence mode="wait">
         {messages.length === 0 ? (
           <motion.div
             key="welcome"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={containerVariants}
             className="absolute inset-0 flex items-center justify-center"
           >
-            <div className="w-full max-w-2xl text-center">
+            <div className="w-full text-center max-w-4xl">
               <motion.h2
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="mb-6 text-3xl font-semibold text-gray-800 dark:text-white"
+                variants={itemVariants}
+                className="mb-8 text-5xl font-bold"
               >
-                Welcome to Miss Khalifa AI
+                👋
+                <span style={gradientStyle}>
+                  Welcome!
+                  <br />
+                  How can I assist you today?
+                </span>
               </motion.h2>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="mb-8 text-lg text-gray-600 dark:text-gray-300"
-              >
-                How can I assist you with sexual health information today?
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="p-6 bg-white dark:bg-[#2d1854] rounded-lg shadow-md"
-              >
-                <div className="flex items-center space-x-3 mb-4">
-                  <Lightbulb className="text-pink-500" />
-                  <h3 className="text-xl font-medium text-gray-800 dark:text-white">Tip</h3>
+              <motion.div className="mb-8 flex items-center justify-center p-4">
+                <div className="w-full rounded-md border border-purple-500/75 bg-gradient-to-r from-violet-950/40 to-purple-900/10 p-4">
+                  <div className="flex space-x-2">
+                    <Sparkles strokeWidth={3} />
+                    <h3 className="mb-2 text-lg font-semibold">Tip</h3>
+                  </div>
+                  <div className="">
+                    <p className="text-sm">{currentTip}</p>
+                  </div>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300">{currentTip}</p>
               </motion.div>
             </div>
           </motion.div>
@@ -86,17 +127,11 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
             key="messages"
             initial="hidden"
             animate="visible"
-            variants={{
-              visible: { transition: { staggerChildren: 0.05 } }
-            }}
-            className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-3xl flex-col justify-end space-y-4"
+            variants={containerVariants}
+            className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-3xl flex-col justify-end space-y-6"
           >
             {messages.map((message, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
+              <motion.div key={index} variants={itemVariants}>
                 <Message
                   message={message}
                   index={index}
@@ -106,20 +141,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 />
               </motion.div>
             ))}
-            {isThinking && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                <Message
-                  message={{ text: '', isBot: true, isLoading: true }}
-                  index={messages.length}
-                  copiedIndex={null}
-                  handleTextToSpeech={() => {}}
-                  handleCopyText={() => {}}
-                />
-              </motion.div>
-            )}
             <div ref={bottomRef} />
           </motion.div>
         )}

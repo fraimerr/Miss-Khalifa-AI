@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
-import Message from '@/components/chat/Message'  // Add this import
 import axios from 'axios'
 import ChatMessages from '@/components/chat/ChatMessages'
 import { motion } from 'framer-motion'
@@ -20,7 +19,7 @@ interface Message {
   isBot: boolean
   chart?: {
     type: 'chart' | 'table'
-    data: { [key: string]: string | number }[]
+    data: { year: string; value: number }[]
     title: string
   }
 }
@@ -81,15 +80,24 @@ const ChatInterface: React.FC = () => {
           localStorage.setItem('chatSessionId', response.data.session_id)
         }
 
-        // Remove the loading message and add the actual response
-        setMessages((prev) => [
-          ...prev,
-          {
-            text: response.data.response,
-            isBot: true,
-            chart: response.data.chart,
-          },
-        ])
+        if (response.data.chart) {
+          setMessages((prev) => [
+            ...prev,
+            {
+              text: response.data.response,
+              isBot: true,
+              chart: response.data.chart,
+            },
+          ])
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            {
+              text: response.data.response,
+              isBot: true,
+            },
+          ])
+        }
       } catch (error: any) {
         console.error('Error fetching bot response:', error)
         toast({
@@ -108,15 +116,9 @@ const ChatInterface: React.FC = () => {
     document.body.classList.toggle('dark', darkMode)
   }, [darkMode])
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   useEffect(() => {
-    scrollToBottom()
-  }, [messages, isThinking])
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
@@ -154,29 +156,64 @@ const ChatInterface: React.FC = () => {
   }, [tips.length])
 
   return (
-    <div className={`flex flex-col h-screen overflow-hidden ${darkMode ? 'dark' : ''}`}>
-      <main className="flex-1 overflow-hidden bg-gray-50 transition-all duration-300 ease-in-out dark:bg-[#0f0721]">
-        <div className="h-full flex flex-col">
+    <div className={`flex h-screen overflow-hidden ${darkMode ? 'dark' : ''}`}>
+      {/* Main Content */}
+      <div className="flex-1 overflow-hidden">
+        <main className="flex h-full flex-1 flex-col bg-gray-50 transition-all duration-300 ease-in-out dark:bg-[#0f0721]">
           <ChatMessages
             messages={messages}
             copiedIndex={copiedIndex}
             handleTextToSpeech={handleTextToSpeech}
             handleCopyText={handleCopyText}
-            bottomRef={messagesEndRef}
-            isThinking={isThinking}
+            bottomRef={bottomRef}
           />
-          <div className="relative p-4 md:p-6">
-            {/* Add the fog effect container */}
-            <div className="absolute inset-0 bg-gradient-to-t from-pink-300/30 to-transparent dark:from-pink-900/30 backdrop-blur-md rounded-t-3xl"></div>
-            
+          {isThinking && (
             <motion.div
-              className="relative mx-auto w-full max-w-4xl"
+              className="flex items-center justify-center py-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="mr-1 h-3 w-3 rounded-full bg-blue-500"
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 0.5,
+                  repeat: Infinity,
+                  repeatType: 'loop',
+                }}
+              />
+              <motion.div
+                className="mr-1 h-3 w-3 rounded-full bg-blue-500"
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 0.5,
+                  repeat: Infinity,
+                  repeatType: 'loop',
+                  delay: 0.1,
+                }}
+              />
+              <motion.div
+                className="h-3 w-3 rounded-full bg-blue-500"
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 0.5,
+                  repeat: Infinity,
+                  repeatType: 'loop',
+                  delay: 0.2,
+                }}
+              />
+            </motion.div>
+          )}
+          <div className="relative pb-6">
+            <motion.div
+              className="mx-auto w-full max-w-4xl px-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <ScrollArea className="w-full whitespace-nowrap mb-4">
-                <div className="flex space-x-2">
+              <ScrollArea className="border-lg w-full whitespace-nowrap">
+                <div className="mb-2 flex space-x-2">
                   {tips.map((tip, index) => (
                     <Button
                       key={index}
@@ -198,24 +235,21 @@ const ChatInterface: React.FC = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Chat with Miss Khalifa..."
-                  className="w-full rounded-full bg-white/80 dark:bg-[#241242]/80 backdrop-blur-sm px-4 py-3 md:px-6 md:py-4 text-base text-gray-900 dark:text-gray-100 shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:focus:ring-purple-500"
+                  className="w-full rounded-full bg-white px-6 py-4 text-base text-gray-900 shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:bg-[#241242] dark:text-gray-100 dark:focus:ring-purple-500"
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 />
                 <button
                   onClick={handleSend}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 transform rounded-full bg-gradient-to-r from-pink-500 to-purple-600 p-2 md:p-3 text-white transition-all duration-300 hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:focus:ring-purple-500"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 transform rounded-full bg-gradient-to-r from-pink-500 to-purple-600 p-3 text-white transition-all duration-300 hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-500 dark:focus:ring-purple-500"
                   aria-label="Send message"
                 >
-                  <Send className="h-4 w-4 md:h-5 md:w-5" />
+                  <Send className="h-5 w-5" />
                 </button>
-              </div>
-              <div>
-                <p></p>
               </div>
             </motion.div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   )
 }

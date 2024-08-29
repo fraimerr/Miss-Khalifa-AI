@@ -1,24 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
-const useTypewriter = (text: string, speed: number = 20) => {
+const useTypewriter = (text: string, speed: number = 10) => {
   const [displayedText, setDisplayedText] = useState("");
-  const textRef = useRef(text);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    textRef.current = text;
-    setDisplayedText("");
-    let i = 0;
-    const typingInterval = setInterval(() => {
-      if (i < textRef.current.length) {
-        setDisplayedText((prev) => textRef.current.slice(0, i + 1));
-        i++;
-      } else {
-        clearInterval(typingInterval);
-      }
-    }, speed);
+    if (currentIndex < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayedText((prev) => prev + text[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
+      }, speed);
 
-    return () => clearInterval(typingInterval);
-  }, [text, speed]);
+      return () => clearTimeout(timer);
+    }
+  }, [text, currentIndex, speed]);
 
   return displayedText;
 };
