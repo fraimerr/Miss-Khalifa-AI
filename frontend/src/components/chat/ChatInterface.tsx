@@ -38,10 +38,12 @@ const ChatInterface: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentTipIndex, setCurrentTipIndex] = useState(0)
   const [sessionId, setSessionId] = useState('')
+  const [isClient, setIsClient] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
 
   useEffect(() => {
+    setIsClient(true)
     const storedSessionId = localStorage.getItem('chatSessionId')
     if (storedSessionId) {
       setSessionId(storedSessionId)
@@ -49,14 +51,18 @@ const ChatInterface: React.FC = () => {
   }, [])
 
   const handleTextToSpeech = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text)
-    window.speechSynthesis.speak(utterance)
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      const utterance = new SpeechSynthesisUtterance(text)
+      window.speechSynthesis.speak(utterance)
+    }
   }
 
   const handleCopyText = (text: string, index: number) => {
-    navigator.clipboard.writeText(text)
-    setCopiedIndex(index)
-    setTimeout(() => setCopiedIndex(null), 2000)
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+      setCopiedIndex(index)
+      setTimeout(() => setCopiedIndex(null), 2000)
+    }
   }
 
   const handleTip = (text: string) => {
@@ -70,7 +76,7 @@ const ChatInterface: React.FC = () => {
       setInput('')
       setIsThinking(true)
       try {
-        const response = await axios.post('http://localhost:5000/api/v1/chat', {
+        const response = await axios.post('http://localhost:5001/chat', {
           message: input,
           session_id: sessionId,
         })
@@ -168,9 +174,8 @@ const ChatInterface: React.FC = () => {
       </button>
 
       {/* Sidebar */}
-      {/* Sidebar */}
       <AnimatePresence>
-        {(isSidebarOpen || window.innerWidth >= 768) && (
+        {(isSidebarOpen || (isClient && window.innerWidth >= 768)) && (
           <motion.div
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
@@ -242,10 +247,30 @@ const ChatInterface: React.FC = () => {
             <div
               className={`border-t p-4 ${darkMode ? 'border-white/20' : 'border-gray-300'}`}
             >
-              <p className="text-center text-xs text-gray-300">
-                Created by Pink Panthers @ Python & Generative AI Summer Camp
-                2024, Saint Kitts
-              </p>
+              <div
+                className={`flex items-center justify-between rounded-full ${darkMode ? 'bg-white/10' : 'bg-gray-200'} p-1`}
+              >
+                <button
+                  className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    !darkMode
+                      ? 'bg-white text-gray-800'
+                      : 'text-white/80 hover:text-white'
+                  }`}
+                  onClick={() => setDarkMode(false)}
+                >
+                  Light
+                </button>
+                <button
+                  className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    darkMode
+                      ? 'bg-gray-800 text-white'
+                      : 'text-gray-800 hover:text-gray-900'
+                  }`}
+                  onClick={() => setDarkMode(true)}
+                >
+                  Dark
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
